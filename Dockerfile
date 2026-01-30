@@ -23,4 +23,12 @@ ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_ENV=production
 
 # Run app with Gunicorn
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "wsgi:app"]
+CMD ["sh", "-c", "\
+  echo 'Running schema.sql...' && \
+  psql $DATABASE_URL -f schema.sql && \
+  echo 'Seeding initial data...' && \
+  psql $DATABASE_URL -c \"INSERT INTO users (email, username, password_hash) \
+       VALUES ('test@example.com', 'testuser', 'fakehash') \
+       ON CONFLICT (email) DO NOTHING;\" && \
+  gunicorn -b 0.0.0.0:5000 wsgi:app \
+"]
