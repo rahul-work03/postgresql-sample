@@ -25,7 +25,7 @@ ENV FLASK_ENV=production
 # Run app with Gunicorn
 CMD ["sh", "-c", "\
   echo 'Running schema.sql...' && \
-  psql $DATABASE_URL -f schema.sql && \
+  psql $DATABASE_URL -f sql/schema.sql && \
   echo 'Seeding initial data...' && \
   psql $DATABASE_URL -c \"INSERT INTO users (email, username, password_hash) \
        VALUES ('test@example.com', 'testuser', 'fakehash') \
